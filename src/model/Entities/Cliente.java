@@ -10,8 +10,7 @@ public class Cliente {
     private String email;
     private LocalDate dataNasc;
 
-    public Cliente(int clientID, String nomeCliente, String CPF, String email, LocalDate dataNasc) {
-        this.clientID = clientID;
+    public Cliente(String nomeCliente, String CPF, String email, LocalDate dataNasc) {
         this.nomeCliente = nomeCliente;
         this.CPF = CPF;
         this.email = email;

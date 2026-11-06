@@ -5,7 +5,7 @@ import model.Entities.Venda;
 import java.util.List;
 
 public interface ClienteDAO {
-    public void cadastrarCliente();
+    public void cadastrarCliente(Cliente cliente);
     public void atualizarCliente();
     public Cliente buscarPorCpf(String cpf);
     public boolean validarCpf();
