@@ -5,15 +5,15 @@ public class Produto {
     private int produto_id;
     private String nomeProduto;
     private String marca;
-    private double preco;
+    private double valor;
     private int quantidade;
     private String lote;
 
-    public Produto(int produto_id,  String nomeProduto, String marca, double preco, int quantidade, String lote) {
+    public Produto(int produto_id,  String nomeProduto, String marca, double valor, int quantidade, String lote) {
         this.produto_id = produto_id;
         this.nomeProduto = nomeProduto;
         this.marca = marca;
-        this.preco = preco;
+        this.valor = valor;
         this.quantidade = quantidade;
         this.lote = lote;
     }
@@ -42,12 +42,12 @@ public class Produto {
         this.marca = marca;
     }
 
-    public double getPreco() {
-        return preco;
+    public double getValor() {
+        return valor;
     }
 
-    public void setPreco(double preco) {
-        this.preco = preco;
+    public void setValor(double valor) {
+        this.valor = valor;
     }
 
     public int getQuantidade() {
@@ -64,5 +64,8 @@ public class Produto {
 
     public void setLote(String lote) {
         this.lote = lote;
+    }
+
+    public void baixarEstoque(int qtd) {
     }
 }
