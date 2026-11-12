@@ -9,7 +9,7 @@ public class DataBase {
     public static Connection getConnection() { // Cria a conexao caso nao exista, e se nao tiver como criar (banco desativado, login incorreto), gera a excecao RuntimeException
         try {
             if(conn==null) {
-                conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/projetojava", "root", "@aba6CW7");
+                conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/projetojava", "root", "1234");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
