@@ -67,5 +67,14 @@ public class Produto {
     }
 
     public void baixarEstoque(int qtd) {
+        if (qtd <= 0) {
+            throw new IllegalArgumentException("Quantidade inválida.");
+        }
+
+        if (qtd > quantidade) {
+            throw new IllegalArgumentException("Estoque insuficiente.");
+        }
+
+        quantidade -= qtd;
     }
 }

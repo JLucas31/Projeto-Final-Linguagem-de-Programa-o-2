@@ -6,9 +6,7 @@ import java.util.List;
 
 public interface ClienteDAO {
     public void cadastrarCliente(Cliente cliente);
-    public void atualizarCliente();
+    public void atualizarCliente(Cliente cliente);
     public Cliente buscarPorCpf(String cpf);
-    public boolean validarCpf();
-    public boolean ehMaiorIdade();
-    public List<Venda> listarCompras();
+    public List<Venda> listarCompras(int clienteId);
 }

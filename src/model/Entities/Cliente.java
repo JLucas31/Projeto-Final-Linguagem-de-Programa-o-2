@@ -1,6 +1,7 @@
 package model.Entities;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 public class Cliente {
 
@@ -15,6 +16,9 @@ public class Cliente {
         this.CPF = CPF;
         this.email = email;
         this.dataNasc = dataNasc;
+    }
+
+    public Cliente() {
     }
 
     public int getClientID() {
@@ -56,4 +60,62 @@ public class Cliente {
     public void setDataNasc(LocalDate dataNasc) {
         this.dataNasc = dataNasc;
     }
+
+    public boolean ehMaiorIdade() {
+
+        if (dataNasc == null) {
+            return false;
+        }
+
+        return Period.between(dataNasc, LocalDate.now())
+                .getYears() >= 18;
+    }
+
+
+    public boolean validarCpf() {
+
+        // Remove pontos, traços e outros caracteres
+        String cpf = this.CPF.replaceAll("[^0-9]", "");
+
+        // CPF precisa ter exatamente 11 dígitos
+        if (cpf.length() != 11) {
+            return false;
+        }
+
+        // Verifica se todos os números são iguais
+        if (cpf.matches("(\\d)\\1{10}")) {
+            return false;
+        }
+
+        int soma = 0;
+
+        // Calcula o primeiro dígito verificador
+        for (int i = 0; i < 9; i++) {
+            soma += Character.getNumericValue(cpf.charAt(i)) * (10 - i);
+        }
+
+        int resto = soma % 11;
+
+        int primeiroDigito = (resto < 2) ? 0 : 11 - resto;
+
+        if (primeiroDigito !=
+                Character.getNumericValue(cpf.charAt(9))) {
+            return false;
+        }
+
+        soma = 0;
+
+        // Calcula o segundo dígito verificador
+        for (int i = 0; i < 10; i++) {
+            soma += Character.getNumericValue(cpf.charAt(i)) * (11 - i);
+        }
+
+        resto = soma % 11;
+
+        int segundoDigito = (resto < 2) ? 0 : 11 - resto;
+
+        return segundoDigito ==
+                Character.getNumericValue(cpf.charAt(10));
+    }
+
 }
