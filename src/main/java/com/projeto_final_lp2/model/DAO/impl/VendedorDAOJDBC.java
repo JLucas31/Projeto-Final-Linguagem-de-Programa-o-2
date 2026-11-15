@@ -1,8 +1,8 @@
-package projeto_final_lp2.projeto_final_lp2.model.DAO.impl;
+package com.projeto_final_lp2.model.DAO.impl;
 
-import projeto_final_lp2.projeto_final_lp2.db.DataBase;
-import projeto_final_lp2.projeto_final_lp2.model.DAO.VendedorDAO;
-import projeto_final_lp2.projeto_final_lp2.model.Entities.Vendedor;
+import com.projeto_final_lp2.db.DataBase;
+import com.projeto_final_lp2.model.DAO.VendedorDAO;
+import com.projeto_final_lp2.model.Entities.Vendedor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package projeto_final_lp2.projeto_final_lp2.model.Entities;
+package com.projeto_final_lp2.model.Entities;
 
 public class PagamentoDebito extends Pagamento {
 
