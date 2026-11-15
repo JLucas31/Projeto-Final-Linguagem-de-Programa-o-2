@@ -1,4 +1,4 @@
-package db;
+package projeto_final_lp2.projeto_final_lp2.db;
 
 import java.sql.*;
 

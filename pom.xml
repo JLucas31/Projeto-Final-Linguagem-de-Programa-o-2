@@ -64,7 +64,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.projeto_final_lp2/com.example.projeto_final_lp2.HelloApplication
+                            <mainClass>com.example.projeto_final_lp2/projeto_final_lp2.controller.HelloApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

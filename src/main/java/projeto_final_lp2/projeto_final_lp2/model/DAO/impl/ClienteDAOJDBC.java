@@ -1,19 +1,15 @@
-package model.DAO.impl;
+package projeto_final_lp2.projeto_final_lp2.model.DAO.impl;
 
-import db.DataBase;
-import model.DAO.ClienteDAO;
-import model.Entities.Cliente;
-
-import java.sql.*;
-
-import model.Entities.Venda;
+import projeto_final_lp2.projeto_final_lp2.db.DataBase;
+import projeto_final_lp2.projeto_final_lp2.model.DAO.ClienteDAO;
+import projeto_final_lp2.projeto_final_lp2.model.Entities.Cliente;
+import projeto_final_lp2.projeto_final_lp2.model.Entities.Venda;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDAOJDBC implements ClienteDAO {

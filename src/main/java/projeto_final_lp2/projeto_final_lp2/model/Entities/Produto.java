@@ -1,4 +1,4 @@
-package model.Entities;
+package projeto_final_lp2.projeto_final_lp2.model.Entities;
 
 public class Produto {
 

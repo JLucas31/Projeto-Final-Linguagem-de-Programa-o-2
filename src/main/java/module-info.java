@@ -1,9 +1,9 @@
-module com.example.projeto_final_lp2 {
+module com.example.projeto_final_lp {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
 
-    opens com.example.projeto_final_lp2 to javafx.fxml;
+    opens projeto_final_lp2.controller to javafx.fxml;
 
-    exports com.example.projeto_final_lp2;
+    exports projeto_final_lp2.controller;
 }

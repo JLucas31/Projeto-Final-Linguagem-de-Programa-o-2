@@ -1,4 +1,4 @@
-package com.controller;
+package projeto_final_lp2.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

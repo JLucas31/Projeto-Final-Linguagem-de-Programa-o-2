@@ -1,20 +1,18 @@
-package model.Entities;
+package projeto_final_lp2.projeto_final_lp2.model.Entities;
 
-public class PagamentoPix extends Pagamento{
+public class PagamentoDebito extends Pagamento {
 
     private double valor_recebido;
 
-    public PagamentoPix(double valor, double valor_recebido) {
+    public PagamentoDebito(double valor, double valor_recebido) {
         super(valor);
         setValor_recebido(valor_recebido);
     }
 
     @Override
     public boolean processar() {
-        return false;
+        return valor_recebido >= getValor();
     }
-
-    // Getters e Setters
 
     public double getValor_recebido() {
         return valor_recebido;
@@ -23,5 +21,4 @@ public class PagamentoPix extends Pagamento{
     public void setValor_recebido(double valor_recebido) {
         this.valor_recebido = valor_recebido;
     }
-
 }

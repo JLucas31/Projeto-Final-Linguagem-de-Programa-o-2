@@ -1,8 +1,8 @@
-package model.DAO.impl;
+package projeto_final_lp2.projeto_final_lp2.model.DAO.impl;
 
-import db.DataBase;
-import model.DAO.VendaDAO;
-import model.Entities.Venda;
+import projeto_final_lp2.projeto_final_lp2.db.DataBase;
+import projeto_final_lp2.projeto_final_lp2.model.DAO.VendaDAO;
+import projeto_final_lp2.projeto_final_lp2.model.Entities.Venda;
 
 import java.sql.*;
 

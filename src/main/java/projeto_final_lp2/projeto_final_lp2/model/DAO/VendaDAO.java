@@ -1,6 +1,6 @@
-package model.DAO;
+package projeto_final_lp2.projeto_final_lp2.model.DAO;
 
-import model.Entities.Venda;
+import projeto_final_lp2.projeto_final_lp2.model.Entities.Venda;
 import java.util.List;
 
 public interface VendaDAO {
