@@ -1,4 +1,4 @@
-package com.example.projeto_final_lp2;
+package com.controller;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
