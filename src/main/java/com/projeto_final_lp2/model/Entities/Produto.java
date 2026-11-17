@@ -1,5 +1,7 @@
 package com.projeto_final_lp2.model.Entities;
 
+import java.time.LocalDate;
+
 public class Produto {
 
     private int produto_id;
@@ -8,6 +10,8 @@ public class Produto {
     private double valor;
     private int quantidade;
     private String lote;
+    private String setor;                // existe no UML e na tabela produto
+    private LocalDate ultimaDataCompra;  // atualizada pela entrada de nota fiscal
 
     public Produto(int produto_id,  String nomeProduto, String marca, double valor, int quantidade, String lote) {
         this.produto_id = produto_id;
@@ -16,6 +20,35 @@ public class Produto {
         this.valor = valor;
         this.quantidade = quantidade;
         this.lote = lote;
+    }
+
+    // Construtor usado pelo ProdutoDAOJDBC (a tabela produto nao tem lote:
+    // o lote fica em item_nota)
+    public Produto(int produto_id, String nomeProduto, String marca, double valor,
+                   int quantidade, String setor, LocalDate ultimaDataCompra) {
+        this.produto_id = produto_id;
+        this.nomeProduto = nomeProduto;
+        this.marca = marca;
+        this.valor = valor;
+        this.quantidade = quantidade;
+        this.setor = setor;
+        this.ultimaDataCompra = ultimaDataCompra;
+    }
+
+    public String getSetor() {
+        return setor;
+    }
+
+    public void setSetor(String setor) {
+        this.setor = setor;
+    }
+
+    public LocalDate getUltimaDataCompra() {
+        return ultimaDataCompra;
+    }
+
+    public void setUltimaDataCompra(LocalDate ultimaDataCompra) {
+        this.ultimaDataCompra = ultimaDataCompra;
     }
 
     public int getProduto_id() {
