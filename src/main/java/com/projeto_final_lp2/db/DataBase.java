@@ -8,7 +8,7 @@ public class DataBase {
 
     public static Connection getConnection() { // Cria a conexao caso nao exista, e se nao tiver como criar (banco desativado, login incorreto), gera a excecao RuntimeException
         try {
-            if(conn==null) {
+            if(conn==null || conn.isClosed()) {
                 conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/projetojava", "root", "1234");
             }
         } catch (SQLException e) {
@@ -17,7 +17,7 @@ public class DataBase {
         return conn;
     }
 
-    public static void closeConnection(){ // Verifica se a conexao existe e, caso exista, fecha com o close(). Caso nao consiga fecahr, emite a excecao RuntimeException
+    public static void closeConnection(){ // Verifica se a conexao existe e, caso exista, fecha com o close(). Caso nao consiga fechar, emite a excecao RuntimeException
         try {
             if(conn!=null)
                 conn.close();

@@ -11,4 +11,5 @@ public interface VendaDAO {
     public void excluirVenda(Venda venda);
     public Venda buscarVenda(Venda venda);
     public List<Venda> listarVendas();
+    public List<Venda> listarPorClienteID(int clienteID);
 }

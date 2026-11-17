@@ -11,6 +11,7 @@ public class Venda {
     private final ArrayList<ItemVenda> itens = new ArrayList<>();
     private Cliente cliente;
     private Vendedor vendedor;
+    private Pagamento pagamento;
     private LocalDate data_venda;
     private double valor_total;
     private boolean finalizada;
@@ -105,6 +106,16 @@ public class Venda {
         }
     }
 
+    // ---------- Pagamento ----------
+
+    public void registrarPagamento(Pagamento pagamento) {
+        verificarVendaAberta();
+        if (pagamento == null) {
+            throw new IllegalArgumentException("Pagamento nao pode ser nulo");
+        }
+        this.pagamento = pagamento;
+    }
+
     // ---------- Finalizacao ----------
 
     // Confere o estoque de TODOS os itens antes de baixar qualquer um,
@@ -126,6 +137,23 @@ public class Venda {
             item.getProduto().baixarEstoque(item.getQtd());
         }
         this.finalizada = true;
+    }
+
+    // ---------- Reconstrucao a partir do banco (uso exclusivo dos DAOs) ----------
+    // Estes metodos NAO validam estoque nem estado da venda: eles apenas
+    // devolvem para o objeto o que ja estava gravado no banco.
+
+    public void carregarItem(ItemVenda item) {
+        itens.add(item);
+        calcularTotal();
+    }
+
+    public void carregarPagamento(Pagamento pagamento) {
+        this.pagamento = pagamento;
+    }
+
+    public void carregarFinalizada(boolean finalizada) {
+        this.finalizada = finalizada;
     }
 
     // ---------- Getters e setters ----------
@@ -156,6 +184,10 @@ public class Venda {
 
     public void setVendedor(Vendedor vendedor) {
         this.vendedor = vendedor;
+    }
+
+    public Pagamento getPagamento() {
+        return pagamento;
     }
 
     public LocalDate getData_venda() {

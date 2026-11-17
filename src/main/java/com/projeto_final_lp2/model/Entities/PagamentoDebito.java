@@ -2,23 +2,37 @@ package com.projeto_final_lp2.model.Entities;
 
 public class PagamentoDebito extends Pagamento {
 
-    private double valor_recebido;
+    private String bandeira;
+    private String ultimos_digitos;
 
-    public PagamentoDebito(double valor, double valor_recebido) {
+    public PagamentoDebito(double valor, String bandeira, String ultimos_digitos) {
         super(valor);
-        setValor_recebido(valor_recebido);
+        setBandeira(bandeira);
+        setUltimos_digitos(ultimos_digitos);
     }
 
-    @Override
-    public boolean processar() {
-        return valor_recebido >= getValor();
+    // processar() eh herdado de Pagamento (retorna true): os dados do
+    // cartao ja sao validados nos setters.
+
+    public String getBandeira() {
+        return bandeira;
     }
 
-    public double getValor_recebido() {
-        return valor_recebido;
+    public void setBandeira(String bandeira) {
+        if (bandeira == null || bandeira.isBlank()) {
+            throw new IllegalArgumentException("Bandeira invalida");
+        }
+        this.bandeira = bandeira;
     }
 
-    public void setValor_recebido(double valor_recebido) {
-        this.valor_recebido = valor_recebido;
+    public String getUltimos_digitos() {
+        return ultimos_digitos;
+    }
+
+    public void setUltimos_digitos(String ultimos_digitos) {
+        if (ultimos_digitos == null || !ultimos_digitos.matches("\\d{4}")) {
+            throw new IllegalArgumentException("Informe os 4 ultimos digitos do cartao");
+        }
+        this.ultimos_digitos = ultimos_digitos;
     }
 }

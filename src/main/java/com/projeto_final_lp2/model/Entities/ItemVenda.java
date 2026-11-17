@@ -3,7 +3,7 @@ package com.projeto_final_lp2.model.Entities;
 public class ItemVenda {
 
     private int item_venda_id;
-    private Produto produto;
+    private final Produto  produto;
     private int qtd;
     private double valor_unitario; // preco do produto NA HORA da venda
 
