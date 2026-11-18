@@ -14,6 +14,9 @@ import com.projeto_final_lp2.model.Entities.Venda;
 import com.projeto_final_lp2.model.Entities.Vendedor;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DAO de Venda. Cada venda envolve 3 tabelas (venda, item_venda, pagamento),
@@ -344,7 +347,8 @@ public class VendaDAOJDBC implements VendaDAO {
             valorRecebido = pix.getValor_recebido();
         } else if (pagamento instanceof PagamentoDebito deb) {
             tipo = "DEBITO";
-            valorRecebido = deb.getValor_recebido();
+            bandeira = deb.getBandeira();
+            ultimosDigitos = deb.getUltimos_digitos();
         } else if (pagamento instanceof PagamentoCredito cred) {
             tipo = "CREDITO";
             bandeira = cred.getBandeira();
@@ -632,8 +636,10 @@ public class VendaDAOJDBC implements VendaDAO {
                             new PagamentoDinheiro(valor, rs.getDouble("valor_recebido"));
                     case "PIX" -> pagamento =
                             new PagamentoPix(valor, rs.getDouble("valor_recebido"));
-                    case "DEBITO" -> pagamento =
-                            new PagamentoDebito(valor, rs.getDouble("valor_recebido"));
+                    case "DEBITO" -> pagamento = new PagamentoDebito(
+                            valor,
+                                    rs.getString("bandeira"),
+                                    rs.getString("ultimos_digitos"));
                     case "CREDITO" -> pagamento = new PagamentoCredito(
                             valor,
                             rs.getString("bandeira"),

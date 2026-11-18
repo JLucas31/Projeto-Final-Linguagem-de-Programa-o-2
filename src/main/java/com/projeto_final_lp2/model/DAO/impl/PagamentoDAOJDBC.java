@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 
 /**
  * DAO de Pagamento e de todas as subclasses. Cada pagamento ocupa DUAS
@@ -133,7 +134,7 @@ public class PagamentoDAOJDBC implements PagamentoDAO {
 
     // Grava o pagamento. Como o banco nao impede dois pagamentos na mesma
     // venda, conferimos aqui.
-    void cadastrarPagamento(Connection conn, Pagamento pagamento) throws SQLException {
+    public void cadastrarPagamento(Connection conn, Pagamento pagamento) throws SQLException {
 
         if (pagamento == null) {
             throw new IllegalArgumentException("Pagamento não pode ser nulo");
@@ -156,7 +157,9 @@ public class PagamentoDAOJDBC implements PagamentoDAO {
             stmt.setInt(1, pagamento.getVenda_id());
             stmt.setString(2, tipo);
             stmt.setDouble(3, pagamento.getValor());
-            stmt.setDate(4, java.sql.Date.valueOf(pagamento.getData_pagamento()));
+
+            LocalDate data = pagamento.getData_pagamento() != null ? pagamento.getData_pagamento() : LocalDate.now();
+            stmt.setDate(4, java.sql.Date.valueOf(data));
 
             stmt.executeUpdate();
 
@@ -171,28 +174,40 @@ public class PagamentoDAOJDBC implements PagamentoDAO {
         inserirDadosDaSubclasse(conn, pagamento);
     }
 
-    Pagamento buscarPorVenda(Connection conn, int vendaID) throws SQLException {
+    public Pagamento buscarPorVenda(Connection conn, int vendaID) throws SQLException {
         return carregar(conn, SQL_POR_VENDA, vendaID);
     }
 
     // Apaga primeiro as linhas das subclasses e depois a linha de pagamento
     // (o banco nao apaga em cascata)
-    void excluirPorVenda(Connection conn, int vendaID) throws SQLException {
+    public void excluirPorVenda(Connection conn, int vendaID) throws SQLException {
+
+        Integer pagamentoId = null;
+        try (PreparedStatement stmt = conn.prepareStatement(
+                "SELECT pagamento_id FROM pagamento WHERE venda_id = ?")) {
+            stmt.setInt(1, vendaID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    pagamentoId = rs.getInt(1);
+                }
+            }
+        }
+
+        if (pagamentoId == null) {
+            return; // Nao ha pagamento registrado para esta venda
+        }
 
         for (String tabela : TABELAS_SUBCLASSES) {
-
-            String sql = "DELETE FROM " + tabela + " WHERE pagamento_id IN " +
-                    "(SELECT pagamento_id FROM pagamento WHERE venda_id = ?)";
-
+            String sql = "DELETE FROM " + tabela + " WHERE pagamento_id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, vendaID);
+                stmt.setInt(1, pagamentoId);
                 stmt.executeUpdate();
             }
         }
 
         try (PreparedStatement stmt = conn.prepareStatement(
-                "DELETE FROM pagamento WHERE venda_id = ?")) {
-            stmt.setInt(1, vendaID);
+                "DELETE FROM pagamento WHERE pagamento_id = ?")) {
+            stmt.setInt(1, pagamentoId);
             stmt.executeUpdate();
         }
     }
@@ -234,6 +249,10 @@ public class PagamentoDAOJDBC implements PagamentoDAO {
             }
 
         } else if (pagamento instanceof PagamentoPix pix) {
+
+            if (pix.getChave_pix() == null || pix.getChave_pix().isBlank()) {
+                throw new IllegalArgumentException("A chave Pix é obrigatória para registrar o pagamento");
+            }
 
             try (PreparedStatement stmt = conn.prepareStatement(
                     "INSERT INTO pagamento_pix (pagamento_id, chave_pix, id_transacao) " +
@@ -374,9 +393,7 @@ public class PagamentoDAOJDBC implements PagamentoDAO {
                     throw dadosAusentes("Pix", id);
                 }
 
-                PagamentoPix pix = new PagamentoPix(valor, rs.getString("chave_pix"));
-                pix.setId_transacao(rs.getString("id_transacao"));
-                return pix;
+                return new PagamentoPix(valor, rs.getString("chave_pix"), rs.getString("id_transacao"));
             }
         }
     }
@@ -400,8 +417,6 @@ public class PagamentoDAOJDBC implements PagamentoDAO {
         }
     }
 
-    // A taxa de juros nao precisa ser lida: o proprio PagamentoCredito a
-    // calcula a partir do numero de parcelas.
     private Pagamento carregarCredito(Connection conn, int id, double valor)
             throws SQLException {
 
@@ -433,7 +448,6 @@ public class PagamentoDAOJDBC implements PagamentoDAO {
     // Controle de transacao
     // =====================================================================
 
-    // Se a gravacao falhou, o ID gerado em memoria nao existe no banco
     private void restaurarId(Pagamento pagamento, int idOriginal) {
         if (pagamento != null) {
             pagamento.setPagamento_id(idOriginal);
@@ -444,7 +458,6 @@ public class PagamentoDAOJDBC implements PagamentoDAO {
         try {
             conn.rollback();
         } catch (SQLException ignorada) {
-            // se o rollback falhar, a excecao original eh a que importa
         }
     }
 
@@ -452,7 +465,6 @@ public class PagamentoDAOJDBC implements PagamentoDAO {
         try {
             conn.setAutoCommit(true);
         } catch (SQLException ignorada) {
-            // conexao ja pode ter sido fechada
         }
     }
 }

@@ -14,8 +14,6 @@ import java.util.List;
 
 public class VendedorDAOJDBC implements VendedorDAO {
 
-    private Connection conn;
-
     // Cadastrar vendedor
     @Override
     public void cadastrarVendedor(Vendedor vendedor) {
@@ -25,7 +23,7 @@ public class VendedorDAOJDBC implements VendedorDAO {
                 "salarioBase, percentualComissao, totalComissao) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (conn = DataBase.getConnection();
+        try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt =
                      conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
