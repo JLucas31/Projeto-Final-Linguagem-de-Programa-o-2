@@ -8,11 +8,16 @@ import com.projeto_final_lp2.model.Entities.Cliente;
 import com.projeto_final_lp2.model.Entities.Vendedor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 
 public class MenuController {
@@ -237,6 +242,66 @@ public class MenuController {
         dpVendedorDataNasc.setValue(null);
         txtVendedorSalario.clear();
         txtVendedorComissao.clear();
+    }
+
+    // ==========================================
+    // Navegação - Área do Vendedor (Produtos)
+    // ==========================================
+    @FXML
+    private void onAbrirAreaVendedor(ActionEvent event) {
+        try {
+            URL fxmlLocation = getClass().getResource("vendedor-view.fxml");
+            if (fxmlLocation == null) {
+                fxmlLocation = getClass().getResource("/projeto_final_lp2/example/projeto_final_lp2/vendedor-view.fxml");
+            }
+            if (fxmlLocation == null) {
+                mostrarAlerta(Alert.AlertType.ERROR, "Erro", "Arquivo não encontrado", "O arquivo vendedor-view.fxml não foi localizado nos recursos.");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(fxmlLocation);
+            Scene scene = new Scene(loader.load(), 1050, 700);
+
+            Stage stage = new Stage();
+            stage.setTitle("Área do Vendedor - Catálogo e Gestão de Produtos");
+            stage.setMinWidth(900);
+            stage.setMinHeight(600);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Erro", "Não foi possível abrir a Área do Vendedor", e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // Navegação - Ponto de Venda (PDV)
+    // ==========================================
+    @FXML
+    private void onAbrirTelaVenda(ActionEvent event) {
+        try {
+            URL fxmlLocation = getClass().getResource("venda-view.fxml");
+            if (fxmlLocation == null) {
+                fxmlLocation = getClass().getResource("/projeto_final_lp2/example/projeto_final_lp2/venda-view.fxml");
+            }
+            if (fxmlLocation == null) {
+                mostrarAlerta(Alert.AlertType.ERROR, "Erro", "Arquivo não encontrado", "O arquivo venda-view.fxml não foi localizado nos recursos.");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(fxmlLocation);
+            Scene scene = new Scene(loader.load(), 1120, 760);
+
+            Stage stage = new Stage();
+            stage.setTitle("Ponto de Venda (PDV) - Nova Venda");
+            stage.setMinWidth(950);
+            stage.setMinHeight(650);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Erro", "Não foi possível abrir a tela de vendas", e.getMessage());
+        }
     }
 
     // ==========================================

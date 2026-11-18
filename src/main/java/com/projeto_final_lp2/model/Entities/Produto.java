@@ -13,6 +13,17 @@ public class Produto {
     private String setor;                // existe no UML e na tabela produto
     private LocalDate ultimaDataCompra;  // atualizada pela entrada de nota fiscal
 
+    public Produto() {
+    }
+
+    public Produto(String nomeProduto, String marca, double valor, int quantidade, String setor) {
+        this.nomeProduto = nomeProduto;
+        this.marca = marca;
+        this.valor = valor;
+        this.quantidade = quantidade;
+        this.setor = setor;
+    }
+
     public Produto(int produto_id,  String nomeProduto, String marca, double valor, int quantidade, String lote) {
         this.produto_id = produto_id;
         this.nomeProduto = nomeProduto;

@@ -25,6 +25,10 @@ public class ItemVenda {
         return qtd * valor_unitario;
     }
 
+    public double getSubtotal() {
+        return calculaSubtotal();
+    }
+
     public int getItem_venda_id() {
         return item_venda_id;
     }

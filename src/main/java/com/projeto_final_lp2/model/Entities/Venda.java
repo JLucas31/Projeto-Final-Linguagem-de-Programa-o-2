@@ -16,6 +16,10 @@ public class Venda {
     private double valor_total;
     private boolean finalizada;
 
+    public Venda(Cliente cliente, Vendedor vendedor, LocalDate data_venda) {
+        this(0, cliente, vendedor, data_venda);
+    }
+
     public Venda(int venda_id, Cliente cliente, Vendedor vendedor, LocalDate data_venda) {
         this.venda_id = venda_id;
         this.cliente = cliente;

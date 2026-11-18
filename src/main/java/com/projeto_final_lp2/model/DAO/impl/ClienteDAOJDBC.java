@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDAOJDBC implements ClienteDAO {
@@ -119,6 +120,38 @@ public class ClienteDAOJDBC implements ClienteDAO {
         }
 
         return null;
+    }
+
+    // Listar todos os clientes
+    @Override
+    public List<Cliente> listarClientes() {
+        List<Cliente> clientes = new ArrayList<>();
+        String sql = "SELECT * FROM cliente ORDER BY nomeCliente ASC";
+
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Cliente cliente = new Cliente();
+                cliente.setClientID(rs.getInt("clientID"));
+                cliente.setNomeCliente(rs.getString("nomeCliente"));
+                cliente.setCPF(rs.getString("CPF"));
+                cliente.setEmail(rs.getString("email"));
+
+                java.sql.Date data = rs.getDate("dataNasc");
+                if (data != null) {
+                    cliente.setDataNasc(data.toLocalDate());
+                }
+
+                clientes.add(cliente);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar clientes: " + e.getMessage(), e);
+        }
+
+        return clientes;
     }
 
     // Listar compras realizadas pelo cliente

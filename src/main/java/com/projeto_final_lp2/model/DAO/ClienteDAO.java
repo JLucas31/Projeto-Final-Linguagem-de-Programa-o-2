@@ -8,5 +8,6 @@ public interface ClienteDAO {
     public void cadastrarCliente(Cliente cliente);
     public void atualizarCliente(Cliente cliente);
     public Cliente buscarPorCpf(String cpf);
+    public List<Cliente> listarClientes();
     public List<Venda> listarCompras(int clienteId);
 }

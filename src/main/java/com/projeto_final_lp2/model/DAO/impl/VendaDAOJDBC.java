@@ -34,6 +34,7 @@ public class VendaDAOJDBC implements VendaDAO {
             "SELECT venda_id FROM venda WHERE clientID = ? ORDER BY data_venda DESC, venda_id DESC";
 
     private Connection conn = null;
+    private final PagamentoDAOJDBC pagamentoDAO = new PagamentoDAOJDBC();
 
     // =====================================================================
     // Operacoes publicas (VendaDAO)
@@ -151,11 +152,7 @@ public class VendaDAOJDBC implements VendaDAO {
 
             exigirVendaAberta(conn, venda.getVenda_id());
 
-            try (PreparedStatement stmt = conn.prepareStatement(
-                    "DELETE FROM pagamento WHERE venda_id = ?")) {
-                stmt.setInt(1, venda.getVenda_id());
-                stmt.executeUpdate();
-            }
+            pagamentoDAO.excluirPorVenda(conn, venda.getVenda_id());
 
             inserirPagamento(conn, venda);
 
@@ -188,8 +185,7 @@ public class VendaDAOJDBC implements VendaDAO {
 
             exigirVendaAberta(conn, venda.getVenda_id());
 
-            executarDeletePorVenda(conn, "DELETE FROM pagamento WHERE venda_id = ?",
-                    venda.getVenda_id());
+            pagamentoDAO.excluirPorVenda(conn, venda.getVenda_id());
             executarDeletePorVenda(conn, "DELETE FROM item_venda WHERE venda_id = ?",
                     venda.getVenda_id());
             executarDeletePorVenda(conn, "DELETE FROM venda WHERE venda_id = ?",
@@ -325,67 +321,12 @@ public class VendaDAOJDBC implements VendaDAO {
         }
     }
 
-    // Todos os tipos de pagamento ficam na mesma tabela; a coluna "tipo"
-    // diz qual subclasse de Pagamento e, e as colunas que nao se aplicam
-    // ao tipo ficam NULL.
+    // Grava o pagamento na tabela pagamento e na respectiva tabela da subclasse
     private void inserirPagamento(Connection conn, Venda venda) throws SQLException {
-
         Pagamento pagamento = venda.getPagamento();
-
-        String tipo;
-        Double valorRecebido = null;
-        String bandeira = null;
-        String ultimosDigitos = null;
-        Integer parcelas = null;
-        Double taxaJuros = null;
-
-        if (pagamento instanceof PagamentoDinheiro din) {
-            tipo = "DINHEIRO";
-            valorRecebido = din.getValor_recebido();
-        } else if (pagamento instanceof PagamentoPix pix) {
-            tipo = "PIX";
-            valorRecebido = pix.getValor_recebido();
-        } else if (pagamento instanceof PagamentoDebito deb) {
-            tipo = "DEBITO";
-            bandeira = deb.getBandeira();
-            ultimosDigitos = deb.getUltimos_digitos();
-        } else if (pagamento instanceof PagamentoCredito cred) {
-            tipo = "CREDITO";
-            bandeira = cred.getBandeira();
-            ultimosDigitos = cred.getUltimos_digitos();
-            parcelas = cred.getNumero_parcelas();
-            taxaJuros = cred.getTaxa_juros();
-        } else {
-            throw new IllegalArgumentException("Tipo de pagamento desconhecido");
-        }
-
-        String sql = "INSERT INTO pagamento " +
-                "(venda_id, tipo, valor, valor_recebido, bandeira, " +
-                "ultimos_digitos, numero_parcelas, taxa_juros, data_pagamento) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt =
-                     conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setInt(1, venda.getVenda_id());
-            stmt.setString(2, tipo);
-            stmt.setDouble(3, pagamento.getValor());
-            stmt.setObject(4, valorRecebido);
-            stmt.setString(5, bandeira);
-            stmt.setString(6, ultimosDigitos);
-            stmt.setObject(7, parcelas);
-            stmt.setObject(8, taxaJuros);
-            stmt.setDate(9, java.sql.Date.valueOf(pagamento.getData_pagamento()));
-
-            stmt.executeUpdate();
-
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    pagamento.setPagamento_id(rs.getInt(1));
-                }
-            }
-
+        if (pagamento != null) {
             pagamento.setVenda_id(venda.getVenda_id());
+            pagamentoDAO.cadastrarPagamento(conn, pagamento);
         }
     }
 
@@ -610,56 +551,9 @@ public class VendaDAOJDBC implements VendaDAO {
         }
     }
 
-    // Reconstroi a subclasse correta de Pagamento a partir da coluna "tipo".
-    // Retorna null se a venda ainda nao tem pagamento.
+    // Reconstroi a subclasse correta de Pagamento delegando ao PagamentoDAOJDBC
     private Pagamento carregarPagamento(Connection conn, int vendaId) throws SQLException {
-
-        String sql = "SELECT * FROM pagamento WHERE venda_id = ?";
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, vendaId);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-
-                if (!rs.next()) {
-                    return null;
-                }
-
-                String tipo = rs.getString("tipo");
-                double valor = rs.getDouble("valor");
-
-                Pagamento pagamento;
-
-                switch (tipo) {
-                    case "DINHEIRO" -> pagamento =
-                            new PagamentoDinheiro(valor, rs.getDouble("valor_recebido"));
-                    case "PIX" -> pagamento =
-                            new PagamentoPix(valor, rs.getDouble("valor_recebido"));
-                    case "DEBITO" -> pagamento = new PagamentoDebito(
-                            valor,
-                                    rs.getString("bandeira"),
-                                    rs.getString("ultimos_digitos"));
-                    case "CREDITO" -> pagamento = new PagamentoCredito(
-                            valor,
-                            rs.getString("bandeira"),
-                            rs.getString("ultimos_digitos"),
-                            rs.getInt("numero_parcelas"));
-                    default -> throw new IllegalStateException(
-                            "Tipo de pagamento desconhecido no banco: " + tipo);
-                }
-
-                pagamento.setPagamento_id(rs.getInt("pagamento_id"));
-                pagamento.setVenda_id(vendaId);
-
-                java.sql.Date data = rs.getDate("data_pagamento");
-                if (data != null) {
-                    pagamento.setData_pagamento(data.toLocalDate());
-                }
-
-                return pagamento;
-            }
-        }
+        return pagamentoDAO.buscarPorVenda(conn, vendaId);
     }
 
     // =====================================================================
