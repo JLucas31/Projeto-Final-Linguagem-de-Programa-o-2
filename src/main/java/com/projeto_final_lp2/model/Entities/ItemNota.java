@@ -5,7 +5,7 @@ public class ItemNota {
     private int item_nota_id;
     private final Produto produto;
     private int qtd;
-    private double valor_unitario; // custo do produto nesta compra
+    private double valor_unitario; // preco de custo do produto nesta compra
     private String lote;           // o lote fica na entrada de mercadoria
 
     public ItemNota(Produto produto, int qtd, double valor_unitario, String lote) {

@@ -186,7 +186,7 @@
                   </VBox>
                   
                   <!-- CARD FORMA DE PAGAMENTO -->
-                  <VBox spacing="14.0" style="-fx-background-color: #ffffff; -fx-padding: 18; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 6, 0, 0, 1);" VBox.hgrow="ALWAYS">
+                  <VBox spacing="14.0" style="-fx-background-color: #ffffff; -fx-padding: 18; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 6, 0, 0, 1);">
                      <children>
                         <Label text="4. Forma de Pagamento" textFill="#1e293b">
                            <font>
@@ -249,7 +249,7 @@
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="txtDigitosDebito" maxLength="4" prefHeight="35.0" promptText="Ex: 1234" style="-fx-background-radius: 5;" />
+                              <TextField fx:id="txtDigitosDebito" prefHeight="35.0" promptText="Ex: 1234" style="-fx-background-radius: 5;" />
                            </children>
                         </VBox>
                         
@@ -268,7 +268,7 @@
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="txtDigitosCredito" maxLength="4" prefHeight="35.0" promptText="Ex: 5678" style="-fx-background-radius: 5;" />
+                              <TextField fx:id="txtDigitosCredito" prefHeight="35.0" promptText="Ex: 5678" style="-fx-background-radius: 5;" />
                               
                               <Label text="Número de Parcelas (1 a 12): *" textFill="#334155">
                                  <font>

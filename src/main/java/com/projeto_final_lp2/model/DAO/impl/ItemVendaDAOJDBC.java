@@ -25,7 +25,7 @@ public class ItemVendaDAOJDBC implements ItemVendaDAO {
     private static final String SELECT_BASE =
             "SELECT i.item_venda_id, i.qtd, i.valor_unitario, " +
                     "p.produto_id, p.nomeProduto, p.marca, p.valor, p.quantidade, " +
-                    "p.ultima_data_compra, p.setor " +
+                    "p.ultima_data_compra, p.setor, p.quantidade_minima " +
                     "FROM item_venda i " +
                     "JOIN produto p ON p.produto_id = i.produto_id ";
 

@@ -1,0 +1,49 @@
+/* Estilo compartilhado pelas telas: barra de botoes no topo + tabela embaixo */
+
+.tela {
+    -fx-background-color: #f1f5f9;
+}
+
+/* Faixa superior com os botoes, alinhados a esquerda */
+.barra-botoes {
+    -fx-background-color: #1e293b;
+    -fx-padding: 12 16 12 16;
+    -fx-spacing: 8;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.botao-barra {
+    -fx-background-color: #334155;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+}
+
+.botao-barra:hover {
+    -fx-background-color: #0284c7;
+}
+
+.botao-voltar {
+    -fx-background-color: #64748b;
+}
+
+/* Area abaixo da barra, ocupada pela tabela */
+.area-tabela {
+    -fx-padding: 16;
+    -fx-spacing: 10;
+}
+
+.rotulo-status {
+    -fx-text-fill: #475569;
+}
+
+/* Produtos que chegaram na quantidade minima */
+.table-row-cell.estoque-minimo {
+    -fx-background-color: #fef3c7;
+}
+
+.table-row-cell.estoque-minimo:selected {
+    -fx-background-color: #0284c7;
+}

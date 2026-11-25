@@ -514,7 +514,8 @@ public class VendaDAOJDBC implements VendaDAO {
     private void carregarItens(Connection conn, Venda venda) throws SQLException {
 
         String sql = "SELECT i.item_venda_id, i.qtd, i.valor_unitario, " +
-                "p.produto_id, p.nomeProduto, p.marca, p.valor, p.quantidade, p.lote " +
+                "p.produto_id, p.nomeProduto, p.marca, p.valor, p.quantidade, " +
+                "p.ultima_data_compra, p.setor, p.quantidade_minima " +
                 "FROM item_venda i " +
                 "JOIN produto p ON p.produto_id = i.produto_id " +
                 "WHERE i.venda_id = ? " +
@@ -528,13 +529,9 @@ public class VendaDAOJDBC implements VendaDAO {
 
                 while (rs.next()) {
 
-                    Produto produto = new Produto(
-                            rs.getInt("produto_id"),
-                            rs.getString("nomeProduto"),
-                            rs.getString("marca"),
-                            rs.getDouble("valor"),
-                            rs.getInt("quantidade"),
-                            rs.getString("lote"));
+                    // A tabela produto nao tem coluna "lote" (ele fica em item_nota),
+                    // entao o produto eh montado pelo mesmo metodo do ProdutoDAOJDBC.
+                    Produto produto = ProdutoDAOJDBC.criarProduto(rs);
 
                     // valor_unitario eh o preco NA HORA da venda,
                     // nao o preco atual do produto

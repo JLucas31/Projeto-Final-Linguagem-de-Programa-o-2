@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<!--
+  Tela de edicao de produto. Menu -> Produtos -> (duplo clique na linha ou botao Editar) -> esta tela.
+  O mesmo formulario tambem serve para "Cadastrar" (o controller troca o titulo).
+-->
+<VBox spacing="14.0" style="-fx-background-color: #f1f5f9;" stylesheets="@estilo.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.projeto_final_lp2.controller.EditarProdutoController">
+   <padding>
+      <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
+   </padding>
+   <children>
+      <Label fx:id="lblTitulo" text="Editar Produto">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label styleClass="rotulo-status" text="(*) campos obrigatórios" />
+
+      <GridPane hgap="12.0" vgap="12.0">
+         <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" minWidth="130.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="260.0" />
+         </columnConstraints>
+         <children>
+            <Label text="Nome *" GridPane.rowIndex="0" />
+            <TextField fx:id="txtNome" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+            <Label text="Marca" GridPane.rowIndex="1" />
+            <TextField fx:id="txtMarca" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="Setor *" GridPane.rowIndex="2" />
+            <ComboBox fx:id="cbSetor" editable="true" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <Label text="Valor (R$) *" GridPane.rowIndex="3" />
+            <TextField fx:id="txtValor" promptText="Ex: 199.90" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <Label text="Quantidade" GridPane.rowIndex="4" />
+            <TextField fx:id="txtQuantidade" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+            <Label text="Quantidade mínima" GridPane.rowIndex="5" />
+            <TextField fx:id="txtQuantidadeMinima" promptText="Ex: 2" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+         </children>
+      </GridPane>
+
+      <Label styleClass="rotulo-status" text="Ao chegar na quantidade mínima durante uma venda, o sistema pergunta se o produto vai para a Cotação." wrapText="true" />
+
+      <HBox alignment="CENTER_RIGHT" spacing="10.0">
+         <children>
+            <Button onAction="#onCancelar" text="Cancelar" />
+            <Button defaultButton="true" onAction="#onSalvar" styleClass="botao-barra" text="Salvar" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

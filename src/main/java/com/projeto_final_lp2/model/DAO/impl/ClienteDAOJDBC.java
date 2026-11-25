@@ -157,11 +157,6 @@ public class ClienteDAOJDBC implements ClienteDAO {
     // Listar compras realizadas pelo cliente
     @Override
     public List<Venda> listarCompras(int clienteID) {
-//
-//        VendaDAOJDBC vendaDAO = new VendaDAOJDBC();
-//
-//        return vendaDAO.listarPorClienteID(clienteID);
-
-        return List.of();
+        return new VendaDAOJDBC().listarPorClienteID(clienteID);
     }
 }

@@ -1,0 +1,32 @@
+========================================================================
+                       LOJA GAMER & GEEK LTDA                          
+            CNPJ: 12.345.678/0001-99   |   IE: 987.654.321.000          
+                  Rua dos Jogos, 100 - Shopping Geek                    
+========================================================================
+ NOTA FISCAL DE CONSUMIDOR ELETRÔNICA (NFC-e)  |  VENDA Nº: #000001
+ DATA E HORA DE EMISSÃO: 25/11/2026 20:47:39
+------------------------------------------------------------------------
+ CLIENTE : João Lucas
+ CPF     : 492.333.208-55
+ E-MAIL  : ababa
+ VENDEDOR: Pedro Henrique (ID: 1)
+------------------------------------------------------------------------
+ ITEM DESCRIÇÃO DO PRODUTO             QTD  VL.UNIT(R$)   SUBTOTAL(R$)
+------------------------------------------------------------------------
+ 001  Playstation 5 Pro                  1      9000,00        9000,00
+------------------------------------------------------------------------
+ TOTAL DE ITENS VENDIDOS: 1
+ VALOR TOTAL DA VENDA   : R$ 9000,00
+------------------------------------------------------------------------
+ FORMA DE PAGAMENTO:
+   Modalidade     : PIX
+   Chave Pix      : pix@lojagamer.com.br
+   ID Transação   : TXN-1795650448261
+------------------------------------------------------------------------
+ CRÉDITO AO VENDEDOR:
+   Comissão da Venda : R$ 450,00 (5,0%)
+   Total Comissões   : R$ 450,00 acumulado
+========================================================================
+    ESTOQUE DOS PRODUTOS BAIXADO COM SUCESSO NO SISTEMA E MYSQL         
+             OBRIGADO PELA PREFERÊNCIA! VOLTE SEMPRE!                   
+========================================================================

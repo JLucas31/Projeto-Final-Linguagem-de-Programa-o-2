@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Aba Vendas: operações no topo e tabela de vendas embaixo -->
+<BorderPane styleClass="tela" stylesheets="@estilo.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.projeto_final_lp2.controller.VendasController">
+
+   <top>
+      <HBox styleClass="barra-botoes">
+         <children>
+            <Button onAction="#onVoltar" styleClass="botao-barra, botao-voltar" text="← Menu" />
+            <Button onAction="#onNovaVenda" styleClass="botao-barra" text="Nova Venda" />
+            <Button onAction="#onVerItens" styleClass="botao-barra" text="Ver Itens" />
+            <Button onAction="#onAtualizar" styleClass="botao-barra" text="Atualizar" />
+         </children>
+      </HBox>
+   </top>
+
+   <center>
+      <VBox styleClass="area-tabela">
+         <children>
+            <TableView fx:id="tabela" VBox.vgrow="ALWAYS">
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+               <columns>
+                  <TableColumn fx:id="colId" text="ID da Venda" />
+                  <TableColumn fx:id="colCliente" text="Cliente" />
+                  <TableColumn fx:id="colVendedor" text="Vendedor" />
+                  <TableColumn fx:id="colData" text="Data da Venda" />
+                  <TableColumn fx:id="colTotal" text="Valor Total" />
+                  <TableColumn fx:id="colStatus" text="Situação" />
+               </columns>
+            </TableView>
+            <Label fx:id="lblStatus" styleClass="rotulo-status" />
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

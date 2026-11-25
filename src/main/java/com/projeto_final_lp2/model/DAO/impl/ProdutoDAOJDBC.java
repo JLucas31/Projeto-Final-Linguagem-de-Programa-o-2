@@ -21,14 +21,14 @@ import java.util.List;
  * O metodo criarProduto(ResultSet) eh reaproveitado pelos DAOs que fazem
  * JOIN com a tabela produto (NotaFiscalCompraDAOJDBC, ItemVendaDAOJDBC,
  * ItemNotaDAOJDBC): o SELECT deles precisa trazer as colunas
- * produto_id, nomeProduto, marca, valor, quantidade, ultima_data_compra
- * e setor.
+ * produto_id, nomeProduto, marca, valor, quantidade, ultima_data_compra,
+ * setor e quantidade_minima.
  */
 public class ProdutoDAOJDBC implements ProdutoDAO {
 
     // Colunas lidas por criarProduto (usadas nos SELECTs deste DAO)
     private static final String COLUNAS =
-            "produto_id, nomeProduto, marca, valor, quantidade, ultima_data_compra, setor";
+            "produto_id, nomeProduto, marca, valor, quantidade, ultima_data_compra, setor, quantidade_minima";
 
     // Cadastrar produto
     @Override
@@ -37,8 +37,8 @@ public class ProdutoDAOJDBC implements ProdutoDAO {
         validarProduto(produto);
 
         String sql = "INSERT INTO produto " +
-                "(nomeProduto, marca, valor, quantidade, ultima_data_compra, setor) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+                "(nomeProduto, marca, valor, quantidade, ultima_data_compra, setor, quantidade_minima) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         Connection conn = DataBase.getConnection();
 
@@ -57,6 +57,7 @@ public class ProdutoDAOJDBC implements ProdutoDAO {
             }
 
             stmt.setString(6, produto.getSetor());
+            stmt.setInt(7, produto.getQuantidadeMinima());
 
             stmt.executeUpdate();
 
@@ -75,14 +76,16 @@ public class ProdutoDAOJDBC implements ProdutoDAO {
         }
     }
 
-    // Atualizar produto (nao altera ultima_data_compra)
+    // Atualizar produto (nao altera ultima_data_compra). A quantidade minima
+    // tambem eh gravada aqui.
     @Override
     public void atualizarProduto(Produto produto) {
 
         validarProduto(produto);
 
         String sql = "UPDATE produto SET " +
-                "nomeProduto = ?, marca = ?, valor = ?, quantidade = ?, setor = ? " +
+                "nomeProduto = ?, marca = ?, valor = ?, quantidade = ?, setor = ?, " +
+                "quantidade_minima = ? " +
                 "WHERE produto_id = ?";
 
         Connection conn = DataBase.getConnection();
@@ -94,7 +97,8 @@ public class ProdutoDAOJDBC implements ProdutoDAO {
             stmt.setDouble(3, produto.getValor());
             stmt.setInt(4, produto.getQuantidade());
             stmt.setString(5, produto.getSetor());
-            stmt.setInt(6, produto.getProduto_id());
+            stmt.setInt(6, produto.getQuantidadeMinima());
+            stmt.setInt(7, produto.getProduto_id());
 
             int linhas = stmt.executeUpdate();
 
@@ -134,7 +138,7 @@ public class ProdutoDAOJDBC implements ProdutoDAO {
             // item_venda / item_nota ainda apontam para este produto
             throw new IllegalStateException(
                     "Não é possível remover o produto " + id +
-                            ": ele já aparece em vendas ou notas fiscais", e);
+                            ": ele já aparece em vendas, notas fiscais ou cotações", e);
         } catch (SQLException e) {
             throw new RuntimeException(
                     "Erro ao remover produto: " + e.getMessage(), e);
@@ -316,7 +320,8 @@ public class ProdutoDAOJDBC implements ProdutoDAO {
                 rs.getDouble("valor"),
                 rs.getInt("quantidade"),
                 rs.getString("setor"),
-                data != null ? data.toLocalDate() : null);
+                data != null ? data.toLocalDate() : null,
+                rs.getInt("quantidade_minima"));
     }
 
     // Executa um SELECT de produtos cujos parametros (se houver) sao todos texto
@@ -359,6 +364,9 @@ public class ProdutoDAOJDBC implements ProdutoDAO {
         }
         if (produto.getQuantidade() < 0) {
             throw new IllegalArgumentException("A quantidade não pode ser negativa");
+        }
+        if (produto.getQuantidadeMinima() < 0) {
+            throw new IllegalArgumentException("A quantidade mínima não pode ser negativa");
         }
     }
 

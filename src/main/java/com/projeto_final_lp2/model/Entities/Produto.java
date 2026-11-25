@@ -12,6 +12,7 @@ public class Produto {
     private String lote;
     private String setor;                // existe no UML e na tabela produto
     private LocalDate ultimaDataCompra;  // atualizada pela entrada de nota fiscal
+    private int quantidadeMinima;        // controle de estoque (aciona a cotacao)
 
     public Produto() {
     }
@@ -44,6 +45,30 @@ public class Produto {
         this.quantidade = quantidade;
         this.setor = setor;
         this.ultimaDataCompra = ultimaDataCompra;
+    }
+
+    // Construtor completo (com quantidade minima), usado pelo ProdutoDAOJDBC
+    public Produto(int produto_id, String nomeProduto, String marca, double valor,
+                   int quantidade, String setor, LocalDate ultimaDataCompra,
+                   int quantidadeMinima) {
+        this(produto_id, nomeProduto, marca, valor, quantidade, setor, ultimaDataCompra);
+        setQuantidadeMinima(quantidadeMinima);
+    }
+
+    public int getQuantidadeMinima() {
+        return quantidadeMinima;
+    }
+
+    public void setQuantidadeMinima(int quantidadeMinima) {
+        if (quantidadeMinima < 0) {
+            throw new IllegalArgumentException("A quantidade mínima não pode ser negativa.");
+        }
+        this.quantidadeMinima = quantidadeMinima;
+    }
+
+    // true quando o estoque chegou na quantidade minima (ou ficou abaixo dela)
+    public boolean atingiuQuantidadeMinima() {
+        return quantidade <= quantidadeMinima;
     }
 
     public String getSetor() {

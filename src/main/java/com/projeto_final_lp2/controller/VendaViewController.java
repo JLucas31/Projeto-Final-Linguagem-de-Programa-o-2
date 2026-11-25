@@ -1,10 +1,12 @@
 package com.projeto_final_lp2.controller;
 
 import com.projeto_final_lp2.model.DAO.ClienteDAO;
+import com.projeto_final_lp2.model.DAO.CotacaoDAO;
 import com.projeto_final_lp2.model.DAO.ProdutoDAO;
 import com.projeto_final_lp2.model.DAO.VendaDAO;
 import com.projeto_final_lp2.model.DAO.VendedorDAO;
 import com.projeto_final_lp2.model.DAO.impl.ClienteDAOJDBC;
+import com.projeto_final_lp2.model.DAO.impl.CotacaoDAOJDBC;
 import com.projeto_final_lp2.model.DAO.impl.ProdutoDAOJDBC;
 import com.projeto_final_lp2.model.DAO.impl.VendaDAOJDBC;
 import com.projeto_final_lp2.model.DAO.impl.VendedorDAOJDBC;
@@ -133,6 +135,7 @@ public class VendaViewController implements Initializable {
     private final VendedorDAO vendedorDAO = new VendedorDAOJDBC();
     private final ProdutoDAO produtoDAO = new ProdutoDAOJDBC();
     private final VendaDAO vendaDAO = new VendaDAOJDBC();
+    private final CotacaoDAO cotacaoDAO = new CotacaoDAOJDBC();
 
     private final ObservableList<ItemVenda> itensCarrinho = FXCollections.observableArrayList();
     private Venda vendaAtual = null;
@@ -143,6 +146,9 @@ public class VendaViewController implements Initializable {
         configurarConversores();
         carregarDadosIniciais();
         configurarFormasPagamento();
+        // O FXML não tem a propriedade "maxLength": o limite de 4 dígitos é aplicado aqui
+        limitarADigitos(txtDigitosDebito, 4);
+        limitarADigitos(txtDigitosCredito, 4);
 
         // Inicia nova venda em memória
         iniciarNovaVenda();
@@ -159,6 +165,12 @@ public class VendaViewController implements Initializable {
 
         // Cálculo de troco ao digitar valor recebido
         txtValorRecebido.textProperty().addListener((obs, antigo, novo) -> atualizarCalculoTroco());
+    }
+
+    // O campo aceita somente números e no máximo "max" dígitos
+    private void limitarADigitos(TextField campo, int max) {
+        campo.setTextFormatter(new TextFormatter<String>(alteracao ->
+                alteracao.getControlNewText().matches("\\d{0," + max + "}") ? alteracao : null));
     }
 
     private void iniciarNovaVenda() {
@@ -528,6 +540,10 @@ public class VendaViewController implements Initializable {
             // Grava no banco MySQL (venda, itens, pagamento e baixa no estoque do banco)
             vendaDAO.inserirVenda(vendaAtual);
 
+            // Estoque ja foi baixado no banco: avisa os produtos que chegaram
+            // na quantidade minima e pergunta se vao para a cotacao
+            verificarEstoqueMinimo(vendaAtual);
+
             // Credita a comissão da venda ao vendedor
             double novaComissao = vendedorDAO.atualizarComissao(vendedor.getVendedorID());
             vendedor.adicionarVenda(vendaAtual.getVenda_id());
@@ -546,6 +562,44 @@ public class VendaViewController implements Initializable {
 
         } catch (Exception e) {
             mostrarAlerta(Alert.AlertType.ERROR, "Erro na Finalização", "Falha ao concluir a venda no sistema", e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // Controle de estoque mínimo (Cotação)
+    // ==========================================
+
+    // Para cada produto da venda, relê a quantidade já baixada no banco. Se
+    // ela chegou na quantidade mínima (ou ficou abaixo), pergunta se o produto
+    // deve ir para a aba Cotação. "Não" não faz nada e a venda segue normal.
+    private void verificarEstoqueMinimo(Venda venda) {
+        for (ItemVenda item : venda.getItens()) {
+            try {
+                Produto atual = produtoDAO.buscarPorID(item.getProduto().getProduto_id());
+                if (atual == null || !atual.atingiuQuantidadeMinima()) {
+                    continue;
+                }
+
+                ButtonType sim = new ButtonType("Sim", ButtonBar.ButtonData.YES);
+                ButtonType nao = new ButtonType("Não", ButtonBar.ButtonData.NO);
+
+                Alert pergunta = new Alert(Alert.AlertType.CONFIRMATION,
+                        "O produto " + atual.getNomeProduto()
+                                + " está com a quantidade mínima. Deseja colocá-lo para cotação?",
+                        sim, nao);
+                pergunta.setTitle("Estoque mínimo");
+                pergunta.setHeaderText("Estoque atual: " + atual.getQuantidade()
+                        + " un. (mínimo: " + atual.getQuantidadeMinima() + ")");
+
+                if (pergunta.showAndWait().orElse(nao) == sim) {
+                    cotacaoDAO.solicitarCotacao(atual.getProduto_id());
+                }
+            } catch (Exception e) {
+                // A venda ja foi gravada: um problema na cotacao nao a desfaz
+                mostrarAlerta(Alert.AlertType.WARNING, "Cotação",
+                        "Não foi possível verificar a cotação de '"
+                                + item.getProduto().getNomeProduto() + "'", e.getMessage());
+            }
         }
     }
 
